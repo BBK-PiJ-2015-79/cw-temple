@@ -2,8 +2,19 @@ package student;
 
 import game.EscapeState;
 import game.ExplorationState;
+import game.NodeStatus;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class Explorer {
+    // instance variables used in explore phase
+    private Random rand = new Random();
+    private Collection<Long> unvisitedNeighbours; //use to choose where to go
+
 
     /**
      * Explore the cavern, trying to find the
@@ -35,6 +46,34 @@ public class Explorer {
      */
     public void explore(ExplorationState state) {
         //TODO : Explore the cavern and find the orb
+        Stack<Long> breadCrumbs = new Stack<>(); // to help with backtracking
+        Collection<Long> visitedSquares = new HashSet<>(); // give priority to unvisited squares
+        //Collection<Long> unvisitedNeighbours; //use to choose where to go
+        long next; //the id of the next square to move to
+
+        Collection<NodeStatus> neighbours; // immediate neighbours
+
+        while(state.getDistanceToTarget() > 0) {
+            //let's hunt some orb
+            if(!visitedSquares.contains(state.getCurrentLocation())) {
+                visitedSquares.add(state.getCurrentLocation());
+            }
+            unvisitedNeighbours = new HashSet<>();
+            neighbours = state.getNeighbours();
+            neighbours.stream().filter(n -> (!visitedSquares.contains(n.getId())))
+                    .forEach(n -> unvisitedNeighbours.add(n.getId()));
+            if(unvisitedNeighbours.size() == 0) {
+                //System.out.println(breadCrumbs); //debug
+                //System.out.println("backtracking"); //debug
+                next = breadCrumbs.pop();
+            }
+            else {
+                next = unvisitedNeighbours.stream().findFirst().get();
+                breadCrumbs.push(state.getCurrentLocation());
+            }
+            //System.out.println(breadCrumbs);
+            state.moveTo(next);
+        }
     }
 
     /**
