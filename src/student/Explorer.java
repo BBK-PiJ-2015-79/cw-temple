@@ -4,10 +4,7 @@ import game.EscapeState;
 import game.ExplorationState;
 import game.NodeStatus;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Explorer {
@@ -68,7 +65,9 @@ public class Explorer {
                 next = breadCrumbs.pop();
             }
             else {
-                next = unvisitedNeighbours.stream().findFirst().get();
+                next = neighbours.stream().filter(n -> (!visitedSquares.contains(n.getId())))
+                        .min((n1,n2) -> (n1.getDistanceToTarget() - n2.getDistanceToTarget())).get().getId();
+                //next = unvisitedNeighbours.stream().findFirst().get();
                 breadCrumbs.push(state.getCurrentLocation());
             }
             //System.out.println(breadCrumbs);
