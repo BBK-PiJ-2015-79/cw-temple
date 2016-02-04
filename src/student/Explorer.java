@@ -2,6 +2,7 @@ package student;
 
 import game.EscapeState;
 import game.ExplorationState;
+import game.Node;
 import game.NodeStatus;
 
 import java.util.*;
@@ -42,7 +43,8 @@ public class Explorer {
      * @param state the information available at the current state
      */
     public void explore(ExplorationState state) {
-        //TODO : Explore the cavern and find the orb
+        //TODO : Look for further optimisation, figure out why unvisitedNeighbours had to be a field
+        //TODO : for goodness sake, clean this code up!
         Stack<Long> breadCrumbs = new Stack<>(); // to help with backtracking
         Collection<Long> visitedSquares = new HashSet<>(); // give priority to unvisited squares
         //Collection<Long> unvisitedNeighbours; //use to choose where to go
@@ -100,5 +102,56 @@ public class Explorer {
      */
     public void escape(EscapeState state) {
         //TODO: Escape from the cavern before time runs out
+        int timeLimit = state.getTimeRemaining();
+        Deque<Node> solution = new LinkedList<>();
+        Node currentNode = state.getCurrentNode();
+        Node nextNode;
+        Set<Node> currentNeighbours;
+        Set<Node> unvisitedNeighbours;
+        Node exitNode = state.getExit();
+        int routeLength = 0;
+        Collection<Node> visitedNodes = new HashSet<>();
+        int debugIter = 0; //debug
+
+
+        while(!currentNode.equals(exitNode)) {
+            //System.out.println(debugIter++);
+            //do a really dumb search
+            if(!visitedNodes.contains(currentNode)) {
+                visitedNodes.add(currentNode);
+            }
+            currentNeighbours = currentNode.getNeighbours();
+            unvisitedNeighbours = currentNeighbours.stream().filter(n -> !visitedNodes.contains(n))
+                    .collect(Collectors.toSet());
+            if(unvisitedNeighbours.size() == 0) {
+                nextNode = solution.removeLast();
+                routeLength -= currentNode.getEdge(nextNode).length();
+            }
+            else {
+                nextNode = unvisitedNeighbours.stream().findFirst().get();
+                routeLength += currentNode.getEdge(nextNode).length();
+                solution.addLast(currentNode);
+            }
+            currentNode = nextNode;
+        }
+        //System.out.println(state.getExit());
+        //System.out.println(state.getCurrentNode().getExits());
+        solution.removeFirst(); //because I'm already there?
+        while(solution.size() > 0) {
+            try {
+                state.pickUpGold();
+            }
+            catch(IllegalStateException e) {
+                System.out.println("No gold here!");
+            }
+            state.moveTo(solution.removeFirst());
+        }
+        try {
+            state.pickUpGold();
+        }
+        catch(IllegalStateException e) {
+            System.out.println("No gold here!");
+        }
+        state.moveTo(exitNode);
     }
 }
