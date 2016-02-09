@@ -106,6 +106,7 @@ public class Explorer {
         Node currentNode = state.getCurrentNode();
         Node exitNode = state.getExit();
         EscapeSolver solver = new DFSEscapeSolver();
+        //EscapeSolver solver = new BFSEscapeSolver();
         solution = solver.getPath(currentNode, exitNode, state);
         followPath(solution, state);
     }

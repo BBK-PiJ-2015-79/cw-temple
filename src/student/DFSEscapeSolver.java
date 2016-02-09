@@ -7,7 +7,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Created by chris on 09/02/2016.
+ * A particularly dumb escape solver. It uses depth first and
+ * backtracking and isn't guaranteed to escape in time!
  */
 public class DFSEscapeSolver implements EscapeSolver {
     @Override
@@ -61,7 +62,18 @@ public class DFSEscapeSolver implements EscapeSolver {
                 }
             }
             else {
-                nextNode = unvisitedNeighbours.stream().findFirst().get();
+                //nextNode = unvisitedNeighbours.stream().findFirst().get();
+                nextNode = unvisitedNeighbours.stream().min((n1, n2) -> {
+                    int n1RowDistance = Math.abs(n1.getTile().getRow() - exitNode.getTile().getRow());
+                    int n1ColDistance = Math.abs(n1.getTile().getColumn() - exitNode.getTile().getColumn());
+                    int n1Distance = n1ColDistance + n1RowDistance;
+
+                    int n2RowDistance = Math.abs(n2.getTile().getRow() - exitNode.getTile().getRow());
+                    int n2ColDistance = Math.abs(n2.getTile().getColumn() - exitNode.getTile().getColumn());
+                    int n2Distance = n2ColDistance + n2RowDistance;
+
+                    return n1Distance - n2Distance;
+                }).get();
                 //routeLength += currentNode.getEdge(nextNode).length();
                 solution.addLast(currentNode);
             }

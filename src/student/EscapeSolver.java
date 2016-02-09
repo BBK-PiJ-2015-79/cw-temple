@@ -6,7 +6,7 @@ import game.Node;
 import java.util.LinkedList;
 
 /**
- * Interface for escape solvers, added to make swapping in BFS/DFS algorithms easier
+ * Interface for escape solvers, added to make swapping in algorithms easier
  */
 public interface EscapeSolver {
     /**
