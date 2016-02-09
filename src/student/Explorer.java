@@ -103,7 +103,7 @@ public class Explorer {
     public void escape(EscapeState state) {
         //TODO: Escape from the cavern before time runs out
         int timeLimit = state.getTimeRemaining();
-        Deque<Node> solution = new LinkedList<>();
+        LinkedList<Node> solution = new LinkedList<>();
         Node currentNode = state.getCurrentNode();
         Node nextNode;
         Set<Node> currentNeighbours;
@@ -113,6 +113,7 @@ public class Explorer {
         Collection<Node> visitedNodes = new HashSet<>();
         int debugIter = 0; //debug
 
+        /*
         //System.out.println("Time limit: " + timeLimit);
         while(!currentNode.equals(exitNode)) {
             debugIter++;
@@ -124,7 +125,7 @@ public class Explorer {
             currentNeighbours = currentNode.getNeighbours();
             unvisitedNeighbours = currentNeighbours.stream().filter(n -> !visitedNodes.contains(n))
                     .collect(Collectors.toSet());
-            if(unvisitedNeighbours.size() == 0 /*|| routeLength > timeLimit*/) {
+            if(unvisitedNeighbours.size() == 0 /*|| routeLength > timeLimit*/ /*) {
                 if(routeLength > timeLimit) {
                     //System.out.println("backtracking (too long)");
                 }
@@ -148,6 +149,19 @@ public class Explorer {
             }
             currentNode = nextNode;
         }
+        */
+
+        solution = getPath(currentNode, exitNode);
+        if(getPathLength(solution) > timeLimit) {
+            solution = getPath(exitNode, currentNode);
+            System.out.println(getPathLength(solution));
+            solution = reverseLL(solution);
+        }
+        if(getPathLength(solution) > timeLimit) {
+            System.out.println("CHECK");
+        }
+
+
         //System.out.println(state.getExit());
         //System.out.println(state.getCurrentNode().getExits());
         //System.out.println("Time limit: " + timeLimit);
@@ -168,6 +182,67 @@ public class Explorer {
         catch(IllegalStateException e) {
             //System.out.println("No gold here!");
         }
-        state.moveTo(exitNode);
+        //state.moveTo(exitNode);
+    }
+
+    private LinkedList<Node> getPath(Node start, Node end) {
+        LinkedList<Node> solution = new LinkedList<>();
+        Node currentNode = start;
+        Node nextNode;
+        Set<Node> currentNeighbours;
+        Set<Node> unvisitedNeighbours;
+        Node exitNode = end;
+        Collection<Node> visitedNodes = new HashSet<>();
+
+        while(!currentNode.equals(exitNode)) {
+
+            //System.out.println("Iteration: " + debugIter + " Route: " + routeLength);
+            //do a really dumb search
+            if(!visitedNodes.contains(currentNode)) {
+                visitedNodes.add(currentNode);
+            }
+            currentNeighbours = currentNode.getNeighbours();
+            unvisitedNeighbours = currentNeighbours.stream().filter(n -> !visitedNodes.contains(n))
+                    .collect(Collectors.toSet());
+            if(unvisitedNeighbours.size() == 0 /*|| routeLength > timeLimit*/) {
+                if(unvisitedNeighbours.size() == 0) {
+                    //System.out.println("backtracking (no neighbours)");
+                }
+                try {
+                    nextNode = solution.removeLast();
+                    //routeLength -= currentNode.getEdge(nextNode).length();
+                }
+                catch(NoSuchElementException e) {
+                    e.printStackTrace();
+                    //System.out.println(solution);
+                    return null;
+                }
+            }
+            else {
+                nextNode = unvisitedNeighbours.stream().findFirst().get();
+                //routeLength += currentNode.getEdge(nextNode).length();
+                solution.addLast(currentNode);
+            }
+            currentNode = nextNode;
+        }
+        solution.addLast(currentNode);
+        return solution;
+    }
+
+    private int getPathLength(LinkedList<Node> path) {
+        // how am I going to do this?
+        int pathLen = 0;
+        for(int i = 0; i < (path.size() - 1); i++) {
+            pathLen += path.get(i).getEdge(path.get(i+1)).length();
+        }
+        return pathLen;
+    }
+
+    private LinkedList<Node> reverseLL(LinkedList<Node> path) {
+        LinkedList<Node> reverse = new LinkedList<>();
+        for(int i = 0; i < path.size(); i++) {
+            reverse.add(0, path.get(i));
+        }
+        return reverse;
     }
 }
