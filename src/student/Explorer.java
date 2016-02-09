@@ -113,9 +113,10 @@ public class Explorer {
         Collection<Node> visitedNodes = new HashSet<>();
         int debugIter = 0; //debug
 
-
+        //System.out.println("Time limit: " + timeLimit);
         while(!currentNode.equals(exitNode)) {
-            //System.out.println(debugIter++);
+            debugIter++;
+            //System.out.println("Iteration: " + debugIter + " Route: " + routeLength);
             //do a really dumb search
             if(!visitedNodes.contains(currentNode)) {
                 visitedNodes.add(currentNode);
@@ -123,9 +124,22 @@ public class Explorer {
             currentNeighbours = currentNode.getNeighbours();
             unvisitedNeighbours = currentNeighbours.stream().filter(n -> !visitedNodes.contains(n))
                     .collect(Collectors.toSet());
-            if(unvisitedNeighbours.size() == 0) {
-                nextNode = solution.removeLast();
-                routeLength -= currentNode.getEdge(nextNode).length();
+            if(unvisitedNeighbours.size() == 0 /*|| routeLength > timeLimit*/) {
+                if(routeLength > timeLimit) {
+                    //System.out.println("backtracking (too long)");
+                }
+                else if(unvisitedNeighbours.size() == 0) {
+                    //System.out.println("backtracking (no neighbours)");
+                }
+                try {
+                    nextNode = solution.removeLast();
+                    routeLength -= currentNode.getEdge(nextNode).length();
+                }
+                catch(NoSuchElementException e) {
+                    e.printStackTrace();
+                    //System.out.println(solution);
+                    return;
+                }
             }
             else {
                 nextNode = unvisitedNeighbours.stream().findFirst().get();
@@ -136,13 +150,15 @@ public class Explorer {
         }
         //System.out.println(state.getExit());
         //System.out.println(state.getCurrentNode().getExits());
+        //System.out.println("Time limit: " + timeLimit);
+        //System.out.println("Route length: " + routeLength);
         solution.removeFirst(); //because I'm already there?
         while(solution.size() > 0) {
             try {
                 state.pickUpGold();
             }
             catch(IllegalStateException e) {
-                System.out.println("No gold here!");
+                //System.out.println("No gold here!");
             }
             state.moveTo(solution.removeFirst());
         }
@@ -150,7 +166,7 @@ public class Explorer {
             state.pickUpGold();
         }
         catch(IllegalStateException e) {
-            System.out.println("No gold here!");
+            //System.out.println("No gold here!");
         }
         state.moveTo(exitNode);
     }
