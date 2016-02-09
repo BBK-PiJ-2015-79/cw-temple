@@ -12,6 +12,7 @@ George still explores in a pretty dumb way here:
 He is particularly dumb here:
 -7552705112380896885
 216638963705328353
+-2598394936880791920 //Ollie's favourite seed.
 
 First successful escape
 -890453785922274189
@@ -21,5 +22,6 @@ FSE algorithm fails here!
 6261706240169786156
 4575305313121767025
 -4546154897597474603
+2358386154697343948
 
 
