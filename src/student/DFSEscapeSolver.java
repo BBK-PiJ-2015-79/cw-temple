@@ -63,6 +63,7 @@ public class DFSEscapeSolver implements EscapeSolver {
             }
             else {
                 //nextNode = unvisitedNeighbours.stream().findFirst().get();
+
                 nextNode = unvisitedNeighbours.stream().min((n1, n2) -> {
                     int n1RowDistance = Math.abs(n1.getTile().getRow() - exitNode.getTile().getRow());
                     int n1ColDistance = Math.abs(n1.getTile().getColumn() - exitNode.getTile().getColumn());
@@ -74,6 +75,7 @@ public class DFSEscapeSolver implements EscapeSolver {
 
                     return n1Distance - n2Distance;
                 }).get();
+                //nextNode = unvisitedNeighbours.stream().findFirst().get();
                 //routeLength += currentNode.getEdge(nextNode).length();
                 solution.addLast(currentNode);
             }

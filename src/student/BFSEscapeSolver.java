@@ -3,75 +3,70 @@ package student;
 import game.EscapeState;
 import game.Node;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import static student.MappingStatus.*;
 
 /**
  * Created by chris on 09/02/2016.
  */
 public class BFSEscapeSolver implements EscapeSolver {
-    Set<Node> visitedNodes;
-    Set<LinkedList<Node>> activeSearches;
-    Set<LinkedList<Node>> solutions;
-    LinkedList<Node> solution;
-    EscapeState eState;
+    Map<Node, EscapeNodeStatus> searchMap;
+    LinkedList<Node> queue;
 
     @Override
     public LinkedList<Node> getPath(Node start, Node end, EscapeState state) {
-        eState = state;
-        visitedNodes = new HashSet<>();
-        activeSearches = new HashSet<>();
-        solutions = new HashSet<>();
 
-        visitedNodes.add(start);
-
-        solution = new LinkedList<>();
-        LinkedList<Node> initialSearch = new LinkedList<>();
-        initialSearch.addLast(start);
-        activeSearches.add(initialSearch);
-
-        Set<Node> currentNeighbours;
+        LinkedList<Node> path;
+        setupSearchMap(state);
 
 
-        while(!activeSearches.isEmpty()) {
-            System.out.println("Searching: " + activeSearches.size() + " possibilities");
-            Set<LinkedList<Node>> newActiveSearches = new HashSet<>();
-            for(LinkedList<Node> currentPath : activeSearches) {
-                currentNeighbours = currentPath.getLast().getNeighbours();
-                currentNeighbours = currentNeighbours.stream().filter(n -> {
-                    //only get unvisited neighbours
-                    return !visitedNodes.contains(n);
-                }).collect(Collectors.toSet());
-                //System.out.println(currentNeighbours.size() + " neighbours!");
-                if(currentNeighbours.contains(end)) {
-                    System.out.println("Found solution!");
-                    currentPath.addLast(end);
-                    solution = currentPath;
-                    break;
-                }
-                addSearches(currentPath, currentNeighbours, newActiveSearches);
+        queue = new LinkedList<>();
+        queue.addLast(start);
+        searchMap.get(start).setNodeStatus(PENDING);
+        searchMap.get(start).setSearchDepth(0);
+        searchMap.get(start).setPathDistance(0);
+        //Do BFS
+        while(!queue.isEmpty()) {
+            //System.out.println(queue);
+            Node currentNode = queue.removeFirst();
+            // Get the next nodes to add to the queue
+            Set<Node> currentUnvisitedNeighbours = currentNode.getNeighbours().stream().filter(n -> {
+                //statement style to make more readable
+                return searchMap.get(n).getNodeStatus() == UNMAPPED;
+            }).collect(Collectors.toSet());
+            for(Node node : currentUnvisitedNeighbours) {
+                searchMap.get(node).setPredecessor(currentNode);
+                searchMap.get(node).setNodeStatus(PENDING);
+                searchMap.get(node).setSearchDepth(searchMap.get(currentNode).getSearchDepth() + 1);
+                searchMap.get(node).setPathDistance(searchMap.get(currentNode).getPathDistance()
+                        + currentNode.getEdge(node).length());
+                queue.add(node);
             }
-            activeSearches = newActiveSearches;
+            searchMap.get(currentNode).setNodeStatus(MAPPED);
+            queue.sort((n1,n2) -> searchMap.get(n1).getPathDistance() - searchMap.get(n2).getPathDistance());
         }
-        return solution;
+        path = constructPathFromSearchMap(end);
+        return path;
     }
 
-    private void addSearches(LinkedList<Node> currentPath, Set<Node> currentNeighbours, Set<LinkedList<Node>> someList) {
-        //
-        for(Node node : currentNeighbours) {
-            LinkedList<Node> newPath = clonePath(currentPath);
-            newPath.addLast(node);
-            someList.add(newPath);
+    private void setupSearchMap(EscapeState state) {
+        Collection<Node> nodes = state.getVertices();
+        searchMap = new HashMap<>();
+        for(Node node : nodes) {
+            searchMap.put(node, new EscapeNodeStatus(node.getId()));
         }
     }
 
-    private LinkedList<Node> clonePath(LinkedList<Node> path) {
-        LinkedList<Node> clonedPath = new LinkedList<>();
-        for(int i=0; i < path.size(); i++) {
-            clonedPath.add(i, path.get(i));
+    private LinkedList<Node> constructPathFromSearchMap(Node end) {
+        LinkedList<Node> path = new LinkedList<>();
+        Node currentNode = end;
+        path.addFirst(currentNode);
+        while(searchMap.get(currentNode).getSearchDepth() > 0) {
+            Node nextNode = searchMap.get(currentNode).getPredecessor();
+            path.addFirst(nextNode);
+            currentNode = nextNode;
         }
-        return clonedPath;
+        return path;
     }
 }

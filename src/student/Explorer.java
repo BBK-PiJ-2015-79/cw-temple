@@ -69,6 +69,8 @@ public class Explorer {
             else {
                 next = neighbours.stream().filter(n -> (!visitedSquares.contains(n.getId())))
                         .min((n1,n2) -> (n1.getDistanceToTarget() - n2.getDistanceToTarget())).get().getId();
+                //next = neighbours.stream().filter(n -> (!visitedSquares.contains(n.getId())))
+                //        .findFirst().get().getId();
                 //next = unvisitedNeighbours.stream().findFirst().get();
                 breadCrumbs.push(state.getCurrentLocation());
             }
@@ -105,8 +107,8 @@ public class Explorer {
         LinkedList<Node> solution;
         Node currentNode = state.getCurrentNode();
         Node exitNode = state.getExit();
-        EscapeSolver solver = new DFSEscapeSolver();
-        //EscapeSolver solver = new BFSEscapeSolver();
+        //EscapeSolver solver = new DFSEscapeSolver();
+        EscapeSolver solver = new BFSEscapeSolver();
         solution = solver.getPath(currentNode, exitNode, state);
         followPath(solution, state);
     }
