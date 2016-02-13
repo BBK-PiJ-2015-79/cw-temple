@@ -108,7 +108,8 @@ public class Explorer {
         Node currentNode = state.getCurrentNode();
         Node exitNode = state.getExit();
         //EscapeSolver solver = new DFSEscapeSolver();
-        EscapeSolver solver = new BFSEscapeSolver();
+        //EscapeSolver solver = new BFSEscapeSolver();
+        EscapeSolver solver = new GreedyEscapeSolver();
         solution = solver.getPath(currentNode, exitNode, state);
         followPath(solution, state);
     }

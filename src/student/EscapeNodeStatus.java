@@ -11,13 +11,14 @@ public class EscapeNodeStatus {
     private MappingStatus nodeStatus;
     private int searchDepth;
     private int pathDistance;
+    private int goldOnPath;
     private Node predecessor;
 
     public EscapeNodeStatus(long id) {
         nodeId = id;
         nodeStatus = UNMAPPED;
         searchDepth = -1;
-        searchDepth = -1;
+        pathDistance = -1;
         predecessor = null;
     }
 
@@ -56,4 +57,14 @@ public class EscapeNodeStatus {
     public void setPathDistance(int pathDistance) {
         this.pathDistance = pathDistance;
     }
+
+
+    public int getGoldOnPath() {
+        return goldOnPath;
+    }
+
+    public void setGoldOnPath(int goldOnPath) {
+        this.goldOnPath = goldOnPath;
+    }
+
 }
