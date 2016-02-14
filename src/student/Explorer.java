@@ -107,10 +107,20 @@ public class Explorer {
         LinkedList<Node> solution;
         Node currentNode = state.getCurrentNode();
         Node exitNode = state.getExit();
-        //EscapeSolver solver = new DFSEscapeSolver();
-        //EscapeSolver solver = new BFSEscapeSolver();
-        EscapeSolver solver = new GreedyEscapeSolver();
+        Set<LinkedList<Node>> solutionSet = new HashSet<>();
+        EscapeSolver solver = new DFSEscapeSolver();
         solution = solver.getPath(currentNode, exitNode, state);
+        solutionSet.add(solution);
+        solver = new BFSEscapeSolver();
+        solution = solver.getPath(currentNode, exitNode, state);
+        solutionSet.add(solution);
+        solver = new GreedyEscapeSolver();
+        solution = solver.getPath(currentNode, exitNode, state);
+        solutionSet.add(solution);
+        solver = new RandomEscapeSolver();
+        solution = solver.getPath(currentNode, exitNode, state);
+        solutionSet.add(solution);
+        solution = solutionSet.stream().max((l1, l2) -> (scorePath(l1) - scorePath(l2))).get();
         followPath(solution, state);
     }
 
@@ -131,5 +141,13 @@ public class Explorer {
         catch(IllegalStateException e) {
             //System.out.println("No gold here!");
         }
+    }
+
+    private int scorePath(LinkedList<Node> path) {
+        int totalGold = 0;
+        for(Node n : path) {
+            totalGold += n.getTile().getGold();
+        }
+        return totalGold;
     }
 }
