@@ -65,7 +65,7 @@ public class RandomEscapeSolver implements EscapeSolver {
                 return n2Weight - n1Weight;
             });
         }
-        System.out.println("HighestGold: " + getHighestGold());
+        //System.out.println("HighestGold: " + getHighestGold());
         path = constructPathFromSearchMap(end);
         return path;
     }

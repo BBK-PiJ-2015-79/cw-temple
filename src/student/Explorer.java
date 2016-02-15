@@ -107,20 +107,48 @@ public class Explorer {
         LinkedList<Node> solution;
         Node currentNode = state.getCurrentNode();
         Node exitNode = state.getExit();
+
+
         Set<LinkedList<Node>> solutionSet = new HashSet<>();
+
         EscapeSolver solver = new DFSEscapeSolver();
         solution = solver.getPath(currentNode, exitNode, state);
         solutionSet.add(solution);
+
         solver = new BFSEscapeSolver();
         solution = solver.getPath(currentNode, exitNode, state);
         solutionSet.add(solution);
+
         solver = new GreedyEscapeSolver();
         solution = solver.getPath(currentNode, exitNode, state);
         solutionSet.add(solution);
+
         solver = new RandomEscapeSolver();
         solution = solver.getPath(currentNode, exitNode, state);
         solutionSet.add(solution);
-        solution = solutionSet.stream().max((l1, l2) -> (scorePath(l1) - scorePath(l2))).get();
+
+        solver = new SmarterEscapeSolver();
+        solution = solver.getPath(currentNode, exitNode, state);
+        solutionSet.add(solution);
+
+        solver = new SmartGreedyEscapeSolver();
+        solution = solver.getPath(currentNode, exitNode, state);
+        solutionSet.add(solution);
+
+        solver = new SmartVeryGreedyEscapeSolver();
+        solution = solver.getPath(currentNode, exitNode, state);
+        solutionSet.add(solution);
+
+        solution = solutionSet.stream()
+                .filter(l -> isPathLengthOkay(l, state.getTimeRemaining()))
+                .max((l1, l2) -> (scorePath(l1) - scorePath(l2))).get();
+
+
+        /*
+        EscapeSolver solver = new SmarterEscapeSolver();
+        solution = solver.getPath(currentNode, exitNode, state);
+        */
+
         followPath(solution, state);
     }
 
@@ -149,5 +177,13 @@ public class Explorer {
             totalGold += n.getTile().getGold();
         }
         return totalGold;
+    }
+
+    private boolean isPathLengthOkay(LinkedList<Node> path, int longestLength) {
+        int pathLength = 0;
+        for(int i = 0; i < path.size() - 1; i++) {
+            pathLength += path.get(i).getEdge(path.get(i+1)).length();
+        }
+        return pathLength <= longestLength;
     }
 }
