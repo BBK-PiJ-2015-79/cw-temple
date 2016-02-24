@@ -102,7 +102,10 @@ public class Explorer {
      */
     public void escape(EscapeState state) {
         //TODO: Escape from the cavern before time runs out
-        EscapeSolver solver = new FastEscapeSolver(state.getCurrentNode(),
+//        EscapeSolver solver = new FastEscapeSolver(state.getCurrentNode(),
+//                state.getExit(), state.getVertices(), state.getTimeRemaining());
+
+        EscapeSolver solver = new CompositeEscapeSolver(state.getCurrentNode(),
                 state.getExit(), state.getVertices(), state.getTimeRemaining());
         EscapePath path = solver.getPath();
 //        System.out.println(path.getGoldOnPath()); //debug

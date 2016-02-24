@@ -72,12 +72,13 @@ public class EscapePath {
      * @throws IllegalArgumentException
      */
     public EscapePath concatenatePath(EscapePath somePath) throws IllegalArgumentException {
+        //System.out.println("Join " + this.get(this.size() - 1) + " to " + somePath.get(0)); //debug
         if(!(this.get(this.size() - 1).equals(somePath.get(0)))) {
             throw new IllegalArgumentException("Paths were not contiguous");
         }
         EscapePath concatenatedPath = new EscapePath();
         for(int i = 0; i < this.size(); i++) concatenatedPath.addLast(this.get(i));
-        for(int j = 0; j < somePath.size(); j++) concatenatedPath.addLast(somePath.get(j));
+        for(int j = 1; j < somePath.size(); j++) concatenatedPath.addLast(somePath.get(j));
         return concatenatedPath;
     }
 
