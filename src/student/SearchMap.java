@@ -101,4 +101,8 @@ public class SearchMap {
         return returnPath;
     }
 
+    public Map<Node, EscapeNodeStatus> getMap() {
+        return map;
+    }
+
 }

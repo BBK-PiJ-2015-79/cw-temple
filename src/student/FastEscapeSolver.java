@@ -5,19 +5,24 @@ import game.Node;
 import java.util.Collection;
 
 /**
- * BFS escape solver
+ * Fast escape solver
+ *
+ * This uses a BFS strategy and prioritises the shortest paths for exploration
+ * at each search depth. It won't get much gold but should provide a safety net
+ * if all else fails.
+ *
  * Refactored class created by chris on 24/02/2016.
  *
  * @author Chris Grocott
  */
-public class BFSEscapeSolver implements EscapeSolver {
-    private Node start;
+public class FastEscapeSolver implements EscapeSolver {
+    private Node start; // do I even need this?
     private Node end;
-    private Collection<Node> vertices;
-    private int timeLimit;
+    private Collection<Node> vertices; // do I even need this?
+    private int timeLimit; // do I even need this?
     private SearchMap map;
 
-    public BFSEscapeSolver(Node start, Node end, Collection<Node> vertices, int timeLimit) {
+    public FastEscapeSolver(Node start, Node end, Collection<Node> vertices, int timeLimit) {
         this.start = start;
         this.end = end;
         this.vertices = vertices;

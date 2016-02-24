@@ -2,11 +2,9 @@ package student;
 
 import game.EscapeState;
 import game.ExplorationState;
-import game.Node;
 import game.NodeStatus;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Explorer {
     // instance variables used in explore phase
@@ -104,9 +102,13 @@ public class Explorer {
      */
     public void escape(EscapeState state) {
         //TODO: Escape from the cavern before time runs out
-        EscapeSolver solver = new BFSEscapeSolver(state.getCurrentNode(),
+        EscapeSolver solver = new FastEscapeSolver(state.getCurrentNode(),
                 state.getExit(), state.getVertices(), state.getTimeRemaining());
         EscapePath path = solver.getPath();
+//        System.out.println(path.getGoldOnPath()); //debug
+//        System.out.println("Escape time: " + state.getTimeRemaining());
+//        System.out.println("Path length: " + path.getPathLength());
+//        System.out.println("Remaining time: " + (state.getTimeRemaining() - path.getPathLength()));
         for(int i = 1; i < path.size(); i++) {
             try {
                 state.pickUpGold();
