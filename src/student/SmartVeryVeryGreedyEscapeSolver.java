@@ -13,13 +13,13 @@ import static student.MappingStatus.UNMAPPED;
 /**
  * Created by chris on 15/02/2016.
  */
-public class SmartVeryVeryGreedyEscapeSolver implements EscapeSolver {
+public class SmartVeryVeryGreedyEscapeSolver /*implements EscapeSolver*/ {
     HashMap<Node, EscapeNodeStatus> escapeTreeMap;
     HashMap<Node, EscapeNodeStatus> reverseTreeMap;
     LinkedList<Node> queue;
     int escapeTime;
 
-    @Override
+    //@Override
     public LinkedList<Node> getPath(Node start, Node end, EscapeState state) {
         escapeTime = state.getTimeRemaining(); // yuck
 
@@ -48,35 +48,7 @@ public class SmartVeryVeryGreedyEscapeSolver implements EscapeSolver {
     }
 
     private void constructTreeMap(HashMap<Node, EscapeNodeStatus> searchTreeMap, Node start, Node end) {
-        queue = new LinkedList<>();
-        queue.addLast(start);
-        searchTreeMap.get(start).setNodeStatus(PENDING);
-        searchTreeMap.get(start).setSearchDepth(0);
-        searchTreeMap.get(start).setPathDistance(0);
-        searchTreeMap.get(start).setGoldOnPath(0);
-        //Do BFS
-        while(!queue.isEmpty()) {
-            //System.out.println(queue);
-            Node currentNode = queue.removeFirst();
-            // Get the next nodes to add to the queue
-            Set<Node> currentUnvisitedNeighbours = currentNode.getNeighbours().stream().filter(n -> {
-                //statement style to make more readable
-                return searchTreeMap.get(n).getNodeStatus() == UNMAPPED;
-            }).collect(Collectors.toSet());
-            for(Node node : currentUnvisitedNeighbours) {
-                int previousGold;
-                previousGold = searchTreeMap.get(currentNode).getGoldOnPath();
-                searchTreeMap.get(node).setPredecessor(currentNode);
-                searchTreeMap.get(node).setNodeStatus(PENDING);
-                searchTreeMap.get(node).setSearchDepth(searchTreeMap.get(currentNode).getSearchDepth() + 1);
-                searchTreeMap.get(node).setPathDistance(searchTreeMap.get(currentNode).getPathDistance()
-                        + currentNode.getEdge(node).length());
-                searchTreeMap.get(node).setGoldOnPath(previousGold + node.getTile().getGold());
-                queue.add(node);
-            }
-            searchTreeMap.get(currentNode).setNodeStatus(MAPPED);
-            queue.sort((n1,n2) -> searchTreeMap.get(n2).getGoldOnPath() - searchTreeMap.get(n1).getGoldOnPath());
-        }
+        // REMOVED - REFACTORED IN TO SearchMap
     }
 
     private LinkedList<Node> findAPath(Node start, Node end) {

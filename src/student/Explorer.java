@@ -104,96 +104,24 @@ public class Explorer {
      */
     public void escape(EscapeState state) {
         //TODO: Escape from the cavern before time runs out
-        LinkedList<Node> solution;
-        Node currentNode = state.getCurrentNode();
-        Node exitNode = state.getExit();
-
-
-        Set<LinkedList<Node>> solutionSet = new HashSet<>();
-
-        EscapeSolver solver = new DFSEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        solutionSet.add(solution);
-
-        solver = new BFSEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        solutionSet.add(solution);
-
-        solver = new GreedyEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        solutionSet.add(solution);
-
-        solver = new RandomEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        solutionSet.add(solution);
-
-        solver = new SmarterEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        solutionSet.add(solution);
-
-        solver = new SmartGreedyEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        solutionSet.add(solution);
-
-        solver = new SmartVeryGreedyEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        solutionSet.add(solution);
-
-
-        solver = new SmartVeryVeryGreedyEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        solutionSet.add(solution);
-
-
-        solution = solutionSet.stream()
-                .filter(l -> isPathLengthOkay(l, state.getTimeRemaining()))
-                .max((l1, l2) -> (scorePath(l1) - scorePath(l2))).get();
-
-        System.out.println("Unused time allowance: " + (state.getTimeRemaining() - getPathLength(solution)));
-
-        followPath(solution, state);
-    }
-
-    private void followPath(LinkedList<Node> solution, EscapeState state) {
-        solution.removeFirst(); //because I'm already there?
-        while(solution.size() > 0) {
+        EscapeSolver solver = new BFSEscapeSolver(state.getCurrentNode(),
+                state.getExit(), state.getVertices(), state.getTimeRemaining());
+        EscapePath path = solver.getPath();
+        for(int i = 1; i < path.size(); i++) {
             try {
                 state.pickUpGold();
             }
             catch(IllegalStateException e) {
-                //System.out.println("No gold here!");
+                //TODO Okay, there's no gold, try a nicer way to handle this
             }
-            state.moveTo(solution.removeFirst());
+            state.moveTo(path.get(i));
         }
         try {
             state.pickUpGold();
         }
         catch(IllegalStateException e) {
-            //System.out.println("No gold here!");
+            //TODO seriously, deal with this.
         }
     }
 
-    private int scorePath(LinkedList<Node> path) {
-        int totalGold = 0;
-        for(Node n : path) {
-            totalGold += n.getTile().getGold();
-        }
-        return totalGold;
-    }
-
-    private boolean isPathLengthOkay(LinkedList<Node> path, int longestLength) {
-        int pathLength = 0;
-        for(int i = 0; i < path.size() - 1; i++) {
-            pathLength += path.get(i).getEdge(path.get(i+1)).length();
-        }
-        return pathLength <= longestLength;
-    }
-
-    private int getPathLength(LinkedList<Node> path) {
-        int pathLength = 0;
-        for(int i = 0; i < path.size() - 1; i++) {
-            pathLength += path.get(i).getEdge(path.get(i+1)).length();
-        }
-        return pathLength;
-    }
 }

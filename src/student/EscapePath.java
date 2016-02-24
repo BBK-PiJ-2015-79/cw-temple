@@ -1,5 +1,9 @@
 package student;
 
+import game.Node;
+
+import java.util.LinkedList;
+
 /**
  * An escape path is a collection of nodes. The nodes should
  * all be next to each other, so you should be able to move from
@@ -10,9 +14,11 @@ package student;
  * @author Chris Grocott
  */
 public class EscapePath {
+    LinkedList<Node> path;
 
     public EscapePath() {
         //TODO zero argument constructor;
+        path = new LinkedList<>();
     }
 
     //TODO
@@ -22,7 +28,7 @@ public class EscapePath {
 
     //TODO
     public Boolean isPathLenghOkay(int upperLimit) {
-        // should path even be responsible for this?
+        // should path even be responsible for this? probably not
         return false;
     }
 
@@ -42,7 +48,20 @@ public class EscapePath {
     }
 
     //TODO - also, is this a good name?
-    public int getNumberOfNodesInPath() {
-        return 0;
+    public int size() {
+        return path.size();
     }
+
+    public void addFirst(Node someNode) {
+        path.addFirst(someNode);
+    }
+
+    public void addLast(Node someNode) {
+        path.addLast(someNode);
+    }
+
+    public Node get(int index) throws IndexOutOfBoundsException {
+        return path.get(index);
+    }
+
 }
