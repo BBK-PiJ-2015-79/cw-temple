@@ -43,6 +43,10 @@ public class SearchMap {
         // TODO
     }
 
-    // TODO implementation of getPath - decide whether this needs to be a linked list
+    // TODO implementation of getPath - decide whether this needs to be a linked list or a path?
+    public EscapePath getPathTo(Node finalNode) {
+        // TODO implement this.
+        return null;
+    }
 
 }
