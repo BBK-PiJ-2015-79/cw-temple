@@ -139,15 +139,17 @@ public class Explorer {
         solution = solver.getPath(currentNode, exitNode, state);
         solutionSet.add(solution);
 
+
+        solver = new SmartVeryVeryGreedyEscapeSolver();
+        solution = solver.getPath(currentNode, exitNode, state);
+        solutionSet.add(solution);
+
+
         solution = solutionSet.stream()
                 .filter(l -> isPathLengthOkay(l, state.getTimeRemaining()))
                 .max((l1, l2) -> (scorePath(l1) - scorePath(l2))).get();
 
-
-        /*
-        EscapeSolver solver = new SmarterEscapeSolver();
-        solution = solver.getPath(currentNode, exitNode, state);
-        */
+        System.out.println("Unused time allowance: " + (state.getTimeRemaining() - getPathLength(solution)));
 
         followPath(solution, state);
     }
@@ -185,5 +187,13 @@ public class Explorer {
             pathLength += path.get(i).getEdge(path.get(i+1)).length();
         }
         return pathLength <= longestLength;
+    }
+
+    private int getPathLength(LinkedList<Node> path) {
+        int pathLength = 0;
+        for(int i = 0; i < path.size() - 1; i++) {
+            pathLength += path.get(i).getEdge(path.get(i+1)).length();
+        }
+        return pathLength;
     }
 }
