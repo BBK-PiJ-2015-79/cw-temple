@@ -10,9 +10,10 @@ import static student.MappingStatus.PENDING;
 import static student.MappingStatus.UNMAPPED;
 
 /**
- * A SearchMap is a structure describing the possible paths through a given EscapeState. The paths are
- * constructed using a breadth-first exploration strategy with a node weighting specified at construction
- * by passing in an object which implements EscapeStrategy.
+ * A SearchMap is a structure describing possible paths through a given EscapeState. The paths are
+ * constructed using a breadth-first exploration strategy with the assumption that you want to get from
+ * one node to another, a node weighting is specified at construction by passing in an object which implements
+ * EscapeStrategy.
  *
  * Once a SearchMap has been constructed paths can be found by specifying a destination Node (typically the exit
  * node but the class has deliberately been left open to calculate paths to other nodes) and then following the
