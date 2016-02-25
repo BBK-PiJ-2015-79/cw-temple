@@ -54,7 +54,7 @@ public class Explorer {
         Collection<NodeStatus> neighbours; // immediate neighbours
 
         while(state.getDistanceToTarget() > 0) {
-            //let's hunt some orb
+            // let's hunt some orb
             if(!visitedSquares.contains(state.getCurrentLocation())) {
                 visitedSquares.add(state.getCurrentLocation());
             }
