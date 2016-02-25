@@ -2,6 +2,7 @@ package student;
 
 import game.EscapeState;
 import game.ExplorationState;
+import game.Node;
 import game.NodeStatus;
 import student.util.escape.CompositeEscapeSolver;
 import student.util.escape.EscapePath;
@@ -102,22 +103,20 @@ public class Explorer {
         EscapeSolver solver = new CompositeEscapeSolver(state.getCurrentNode(),
                 state.getExit(), state.getVertices(), state.getTimeRemaining());
         EscapePath path = solver.getPath();
-
+        //follow the path, picking up gold as you go
         for(int i = 1; i < path.size(); i++) {
-            try {
+            if(nodeHasGold(state.getCurrentNode())) {
                 state.pickUpGold();
-            }
-            catch(IllegalStateException e) {
-                //TODO Okay, there's no gold, try a nicer way to handle this
             }
             state.moveTo(path.get(i));
         }
-        try {
+        if(nodeHasGold(state.getCurrentNode())) {
             state.pickUpGold();
         }
-        catch(IllegalStateException e) {
-            //TODO seriously, deal with this.
-        }
+    }
+
+    private Boolean nodeHasGold(Node someNode) {
+        return someNode.getTile().getGold() > 0;
     }
 
 }
