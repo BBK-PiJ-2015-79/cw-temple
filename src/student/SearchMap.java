@@ -10,7 +10,13 @@ import static student.MappingStatus.PENDING;
 import static student.MappingStatus.UNMAPPED;
 
 /**
- * TODO documentation for a search map...
+ * A SearchMap is a structure describing the possible paths through a given EscapeState. The paths are
+ * constructed using a breadth-first exploration strategy with a node weighting specified at construction
+ * by passing in an object which implements EscapeStrategy.
+ *
+ * Once a SearchMap has been constructed paths can be found by specifying a destination Node (typically the exit
+ * node but the class has deliberately been left open to calculate paths to other nodes) and then following the
+ * search tree from that destination back up the hierarchy until the root node is reached.
  *
  * Created by chris on 23/02/2016.
  *
@@ -31,25 +37,22 @@ public class SearchMap {
      * @param strategy - the search strategy used to construct the search map
      */
     public SearchMap(Node start, Node end, Collection<Node> vertices, SearchStrategy strategy) {
-        // TODO decide whether multiple constructors are really neccessary
         this.vertices = vertices;
         this.start = start;
         this.end = end;
         this.strategy = strategy;
         this.map = new HashMap<>();
-        initialiseMap();
         buildSearchMap();
     }
 
-    private void initialiseMap() {
-        // TODO
-        for(Node node: vertices) {
-            map.put(node, new EscapeNodeStatus(node.getId()));
-        }
-    }
-
+    /*
+     * Builds the search map, the nodes are processed in breadth-first order and processed according
+     * to the strategy defined by the SearchStrategy object passed in at construction.
+     */
     private void buildSearchMap() {
         //TODO possible refactoring of EscapeNodeStatus update procedure?
+        initialiseMap();
+
         LinkedList<Node> searchQueue = new LinkedList<>();
         Set<Node> currentUnvisitedNeighbours = new HashSet<>();
 
@@ -84,11 +87,24 @@ public class SearchMap {
         }
     }
 
+    /*
+     * Helper function for buildSearchMap() - puts all of the nodes in the current escape
+     * state in to the search map and initialises their corresponding EscapeNodeStatus.
+     */
+    private void initialiseMap() {
+        for(Node node: vertices) {
+            map.put(node, new EscapeNodeStatus(node.getId()));
+        }
+    }
 
-
-    // TODO implementation of getPath - decide whether this needs to be a linked list or a path?
+    /**
+     * Returns an EscapePath from the start position of this SearchMap to the node specified as a parameter.
+     *
+     * This method is useful for finding partial routes through an EscapeCavern
+     * @param finalNode the destination node of the path.
+     * @return an EscapePath going from the initial node to the destination node.
+     */
     public EscapePath getPathTo(Node finalNode) {
-        // TODO implement this.
         EscapePath returnPath = new EscapePath();
         Node currentNode = finalNode;
         Node nextNode = null;
@@ -101,11 +117,19 @@ public class SearchMap {
         return returnPath;
     }
 
-    //TODO possible candidate for deletion? don't want to expose more of the map than I need to
-//    public Map<Node, EscapeNodeStatus> getMap() {
-//        return map;
-//    }
+    /**
+     * Returns an escape path from the start position of this SearchMap to the end position.
+     * @return an EscapePath from the start node to the end node.
+     */
+    public EscapePath getPathToEnd() {
+        return getPathTo(end);
+    }
 
+    /**
+     * Get the EscapeNodeStatus corresponding to a given node.
+     * @param someNode the node to be examined.
+     * @return the EscapeNodeStatus object corresponding to the desired Node.
+     */
     public EscapeNodeStatus getNodeStatus(Node someNode) {
         return map.get(someNode);
     }
