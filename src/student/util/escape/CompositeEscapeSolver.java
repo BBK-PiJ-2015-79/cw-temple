@@ -5,8 +5,21 @@ import game.Node;
 import java.util.*;
 
 /**
- * //TODO documentation
+ * This escape solver uses a combination of search strategies to try and find a path through
+ * the EscapeState which is better than any of the individual strategies by themselves.
+ *
+ * The CompositeEscapeSolver starts by setting up SearchMaps both from the currentState to the
+ * exit, but also from the exit to the currentState, taking advantage of the fact that paths are
+ * reversible.
+ *
+ * The CompositeEscapeSolver then looks for the richest path in each SearchMap <i>regardless of where
+ * this path ends up.</i> The CompositeEscapeSolver then looks for a path from the exit to the end
+ * point of the richest path, and glues these together to form a composite path from the start point
+ * to the exit.
+ *
  * Created by chris on 24/02/2016.
+ *
+ * @author Chris Grocott
  */
 public class CompositeEscapeSolver implements EscapeSolver {
 
@@ -39,6 +52,7 @@ public class CompositeEscapeSolver implements EscapeSolver {
     }
 
     private void setupSearchMaps() {
+        //TODO there has to be a way to DRY this out.
         fastMap = new SearchMap(start, end, vertices, new FastSearchStrategy());
         reverseFastMap = new SearchMap(end, start, vertices, new FastSearchStrategy());
         greedyMap = new SearchMap(start, end, vertices, new GreedySearchStrategy());
@@ -48,18 +62,30 @@ public class CompositeEscapeSolver implements EscapeSolver {
     }
 
     private void generateSolutions() {
-        //TODO
+        //TODO there has to be a way to DRY this out.
         solutionSet.add(getCompositePath(fastMap, reverseFastMap));
         solutionSet.add(getCompositePath(fastMap, reverseGreedyMap));
         solutionSet.add(getCompositePath(fastMap, reverseZenMap));
+
+        solutionSet.add(getCompositePath(reverseFastMap, fastMap).getReversePath());
+        solutionSet.add(getCompositePath(reverseGreedyMap, fastMap).getReversePath());
+        solutionSet.add(getCompositePath(reverseZenMap, fastMap).getReversePath());
 
         solutionSet.add(getCompositePath(greedyMap, reverseFastMap));
         solutionSet.add(getCompositePath(greedyMap, reverseGreedyMap));
         solutionSet.add(getCompositePath(greedyMap, reverseZenMap));
 
+        solutionSet.add(getCompositePath(reverseFastMap, greedyMap).getReversePath());
+        solutionSet.add(getCompositePath(reverseGreedyMap, greedyMap).getReversePath());
+        solutionSet.add(getCompositePath(reverseZenMap, greedyMap).getReversePath());
+
         solutionSet.add(getCompositePath(zenMap, reverseFastMap));
         solutionSet.add(getCompositePath(zenMap, reverseGreedyMap));
         solutionSet.add(getCompositePath(zenMap, reverseZenMap));
+
+        solutionSet.add(getCompositePath(reverseFastMap, zenMap).getReversePath());
+        solutionSet.add(getCompositePath(reverseGreedyMap, zenMap).getReversePath());
+        solutionSet.add(getCompositePath(reverseZenMap, zenMap).getReversePath());
     }
 
     private EscapePath getCompositePath(SearchMap someSearchMap, SearchMap someReverseSearchMap) {

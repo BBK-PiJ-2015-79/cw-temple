@@ -15,19 +15,11 @@ import java.util.Collection;
  *
  * @author Chris Grocott
  */
-// TODO: 25/02/2016 clean up unused fields, maybe setUpSearchMap can access map directly?
+// TODO: 25/02/2016 decide whether timeLimit checking is needed - what to do in case of issues?
 public class FastEscapeSolver implements EscapeSolver {
-    private Node start; // do I even need this?
-    private Node end;
-    private Collection<Node> vertices; // do I even need this?
-    private int timeLimit; // do I even need this?
     private SearchMap map;
 
     public FastEscapeSolver(Node start, Node end, Collection<Node> vertices, int timeLimit) {
-        this.start = start;
-        this.end = end;
-        this.vertices = vertices;
-        this.timeLimit = timeLimit;
         this.map = setupSearchMap(start, end, vertices);
     }
 

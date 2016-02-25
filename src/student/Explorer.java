@@ -63,19 +63,13 @@ public class Explorer {
             neighbours.stream().filter(n -> (!visitedSquares.contains(n.getId())))
                     .forEach(n -> unvisitedNeighbours.add(n.getId()));
             if(unvisitedNeighbours.size() == 0) {
-                //System.out.println(breadCrumbs); //debug
-                //System.out.println("backtracking"); //debug
                 next = breadCrumbs.pop();
             }
             else {
                 next = neighbours.stream().filter(n -> (!visitedSquares.contains(n.getId())))
                         .min((n1,n2) -> (n1.getDistanceToTarget() - n2.getDistanceToTarget())).get().getId();
-                //next = neighbours.stream().filter(n -> (!visitedSquares.contains(n.getId())))
-                //        .findFirst().get().getId();
-                //next = unvisitedNeighbours.stream().findFirst().get();
                 breadCrumbs.push(state.getCurrentLocation());
             }
-            //System.out.println(breadCrumbs);
             state.moveTo(next);
         }
     }
@@ -104,17 +98,11 @@ public class Explorer {
      * @param state the information available at the current state
      */
     public void escape(EscapeState state) {
-        //TODO: Escape from the cavern before time runs out
-//        EscapeSolver solver = new FastEscapeSolver(state.getCurrentNode(),
-//                state.getExit(), state.getVertices(), state.getTimeRemaining());
 
         EscapeSolver solver = new CompositeEscapeSolver(state.getCurrentNode(),
                 state.getExit(), state.getVertices(), state.getTimeRemaining());
         EscapePath path = solver.getPath();
-//        System.out.println(path.getGoldOnPath()); //debug
-//        System.out.println("Escape time: " + state.getTimeRemaining());
-//        System.out.println("Path length: " + path.getPathLength());
-//        System.out.println("Remaining time: " + (state.getTimeRemaining() - path.getPathLength()));
+
         for(int i = 1; i < path.size(); i++) {
             try {
                 state.pickUpGold();

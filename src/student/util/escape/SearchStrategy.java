@@ -1,5 +1,6 @@
 package student.util.escape;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Comparator;
  *
  * @author Chris Grocott
  */
-public interface SearchStrategy extends Comparator<EscapeNodeStatus> {
+public interface SearchStrategy extends Comparator<EscapeNodeStatus>, Serializable {
     @Override
     int compare(EscapeNodeStatus n1, EscapeNodeStatus n2);
 }

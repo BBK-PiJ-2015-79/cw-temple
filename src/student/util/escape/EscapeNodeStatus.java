@@ -13,7 +13,6 @@ public class EscapeNodeStatus {
     private int pathDistance;
     private int goldOnPath;
     private Node predecessor;
-    private Node successor;
 
     public EscapeNodeStatus(long id) {
         nodeId = id;
@@ -21,7 +20,6 @@ public class EscapeNodeStatus {
         searchDepth = -1;
         pathDistance = -1;
         predecessor = null;
-        successor = null;
     }
 
     public long getNodeId() {
