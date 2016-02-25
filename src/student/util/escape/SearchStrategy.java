@@ -1,4 +1,4 @@
-package student;
+package student.util.escape;
 
 import java.util.Comparator;
 

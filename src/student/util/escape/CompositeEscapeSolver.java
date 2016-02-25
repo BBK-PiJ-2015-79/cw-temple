@@ -1,4 +1,4 @@
-package student;
+package student.util.escape;
 
 import game.Node;
 
@@ -63,16 +63,15 @@ public class CompositeEscapeSolver implements EscapeSolver {
     }
 
     private EscapePath getCompositePath(SearchMap someSearchMap, SearchMap someReverseSearchMap) {
-        int candidatePathLength = Integer.MAX_VALUE;
+        int candidatePathLength;
         Node candidateMidPoint = null;
         boolean pathFound = false;
-        //Map<Node, EscapeNodeStatus> rawMap = someSearchMap.getMap();
         LinkedList<Node> sortedNodeList = new LinkedList<>();
         for(Node n : vertices) {
             sortedNodeList.add(n);
         }
-        //sortedNodeList.sort((n1, n2) -> sortingStrategy.compare(rawMap.get(n1), rawMap.get(n2)));
-        sortedNodeList.sort((n1, n2) -> sortingStrategy.compare(someSearchMap.getNodeStatus(n1), someSearchMap.getNodeStatus(n2)));
+        sortedNodeList.sort((n1, n2) -> sortingStrategy
+                .compare(someSearchMap.getNodeStatus(n1), someSearchMap.getNodeStatus(n2)));
         while(!pathFound) {
             candidateMidPoint = sortedNodeList.removeFirst();
             candidatePathLength = someSearchMap.getPathTo(candidateMidPoint).getPathLength() +

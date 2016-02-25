@@ -1,4 +1,4 @@
-package student;
+package student.util.escape;
 
 /**
  * Created by chris on 10/02/2016.

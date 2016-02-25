@@ -1,7 +1,7 @@
-package student;
+package student.util.escape;
 
 import game.Node;
-import static student.MappingStatus.*;
+import static student.util.escape.MappingStatus.*;
 
 /**
  * Created by chris on 10/02/2016.

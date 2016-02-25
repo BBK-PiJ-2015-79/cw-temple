@@ -1,4 +1,4 @@
-package student;
+package student.util.general;
 
 import java.util.ArrayList;
 import java.util.HashMap;

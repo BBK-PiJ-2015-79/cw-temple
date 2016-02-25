@@ -1,13 +1,9 @@
-package student;
+package student.util.escape;
 
 import game.Node;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static student.MappingStatus.MAPPED;
-import static student.MappingStatus.PENDING;
-import static student.MappingStatus.UNMAPPED;
 
 /**
  * A SearchMap is a structure describing possible paths through a given EscapeState. The paths are
@@ -63,12 +59,12 @@ public class SearchMap {
             Node currentNode = searchQueue.removeFirst();
             // Get unprocessed neighbouring nodes and add them to the queue
             currentUnvisitedNeighbours = currentNode.getNeighbours().stream()
-                    .filter(n -> map.get(n).getNodeStatus() == UNMAPPED).collect(Collectors.toSet());
+                    .filter(n -> map.get(n).getNodeStatus() == MappingStatus.UNMAPPED).collect(Collectors.toSet());
             for(Node neighbour : currentUnvisitedNeighbours) {
                 updateEscapeNodeStatus(neighbour, currentNode);
                 searchQueue.add(neighbour);
             }
-            map.get(currentNode).setNodeStatus(MAPPED); // we're done with this node
+            map.get(currentNode).setNodeStatus(MappingStatus.MAPPED); // we're done with this node
             searchQueue.sort((n1,n2) -> strategy.compare(map.get(n1), map.get(n2))); //prioritise for the next sweep
         }
     }
@@ -89,7 +85,7 @@ public class SearchMap {
      */
     private void updateEscapeNodeStatus(Node someNode, Node parentNode) {
         map.get(someNode).setPredecessor(parentNode); //0: predecessor
-        map.get(someNode).setNodeStatus(PENDING); //1: status
+        map.get(someNode).setNodeStatus(MappingStatus.PENDING); //1: status
         if(someNode.equals(start)) {
             map.get(someNode).setSearchDepth(0); //2: depth
             map.get(someNode).setPathDistance(0); //3: distance

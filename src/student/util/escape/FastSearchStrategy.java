@@ -1,4 +1,4 @@
-package student;
+package student.util.escape;
 
 /**
  * A search strategy used to find the fastest way out of an escape map

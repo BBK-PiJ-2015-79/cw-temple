@@ -1,4 +1,4 @@
-package student;
+package student.util.escape;
 
 /**
  * Interface for escape solvers, added to make swapping in algorithms easier

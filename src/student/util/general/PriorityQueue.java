@@ -1,4 +1,4 @@
-package student;
+package student.util.general;
 
 /**
  * An implementation implements a priority queue whose elements are of type E.

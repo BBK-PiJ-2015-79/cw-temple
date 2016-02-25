@@ -1,4 +1,4 @@
-package student;
+package student.util.escape;
 
 /**
  * A balanced search strategy, halfway between avarice and panic
