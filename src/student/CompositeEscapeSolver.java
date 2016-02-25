@@ -34,7 +34,7 @@ public class CompositeEscapeSolver implements EscapeSolver {
         setupSearchMaps();
         this.solutionSet = new HashSet<>();
         generateSolutions();
-        this.solutionSet.add((new FastEscapeSolver(start, end, vertices, timeLimit)).getPath());
+        this.solutionSet.add((new FastEscapeSolver(start, end, vertices, timeLimit)).getPath()); // safety net
     }
 
     private void setupSearchMaps() {
@@ -65,12 +65,13 @@ public class CompositeEscapeSolver implements EscapeSolver {
         int candidatePathLength = Integer.MAX_VALUE;
         Node candidateMidPoint = null;
         boolean pathFound = false;
-        Map<Node, EscapeNodeStatus> rawMap = someSearchMap.getMap();
+        //Map<Node, EscapeNodeStatus> rawMap = someSearchMap.getMap();
         LinkedList<Node> sortedNodeList = new LinkedList<>();
         for(Node n : vertices) {
             sortedNodeList.add(n);
         }
-        sortedNodeList.sort((n1, n2) -> sortingStrategy.compare(rawMap.get(n1), rawMap.get(n2)));
+        //sortedNodeList.sort((n1, n2) -> sortingStrategy.compare(rawMap.get(n1), rawMap.get(n2)));
+        sortedNodeList.sort((n1, n2) -> sortingStrategy.compare(someSearchMap.getNodeStatus(n1), someSearchMap.getNodeStatus(n2)));
         while(!pathFound) {
             candidateMidPoint = sortedNodeList.removeFirst();
             candidatePathLength = someSearchMap.getPathTo(candidateMidPoint).getPathLength() +

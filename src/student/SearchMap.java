@@ -101,8 +101,13 @@ public class SearchMap {
         return returnPath;
     }
 
-    public Map<Node, EscapeNodeStatus> getMap() {
-        return map;
+    //TODO possible candidate for deletion? don't want to expose more of the map than I need to
+//    public Map<Node, EscapeNodeStatus> getMap() {
+//        return map;
+//    }
+
+    public EscapeNodeStatus getNodeStatus(Node someNode) {
+        return map.get(someNode);
     }
 
 }

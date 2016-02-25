@@ -23,7 +23,7 @@ public class EscapePath {
     }
 
     /**
-     * Returns the amount of gold on the path, nodes that are traversed mmultiple times are only
+     * Returns the amount of gold on the path, nodes that are traversed multiple times are only
      * counted once
      * @return the amount of gold on the path
      */
