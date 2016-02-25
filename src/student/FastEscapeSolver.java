@@ -15,6 +15,7 @@ import java.util.Collection;
  *
  * @author Chris Grocott
  */
+// TODO: 25/02/2016 clean up unused fields, maybe setUpSearchMap can access map directly?
 public class FastEscapeSolver implements EscapeSolver {
     private Node start; // do I even need this?
     private Node end;
@@ -32,7 +33,7 @@ public class FastEscapeSolver implements EscapeSolver {
 
     @Override
     public EscapePath getPath() {
-        return map.getPathTo(end);
+        return map.getPathToEnd();
     }
 
     private SearchMap setupSearchMap(Node start, Node end, Collection<Node> vertices) {

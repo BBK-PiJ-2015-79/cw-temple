@@ -50,40 +50,25 @@ public class SearchMap {
      * to the strategy defined by the SearchStrategy object passed in at construction.
      */
     private void buildSearchMap() {
-        //TODO possible refactoring of EscapeNodeStatus update procedure?
         initialiseMap();
 
         LinkedList<Node> searchQueue = new LinkedList<>();
-        Set<Node> currentUnvisitedNeighbours = new HashSet<>();
+        Set<Node> currentUnvisitedNeighbours;
 
         searchQueue.addLast(start);
-        map.get(start).setNodeStatus(PENDING);
-        map.get(start).setSearchDepth(0);
-        map.get(start).setPathDistance(0);
-        map.get(start).setGoldOnPath(0);
+        updateEscapeNodeStatus(start, null);
         //Do BFS with prioritisation given by search strategy
         while(!searchQueue.isEmpty()) {
             Node currentNode = searchQueue.removeFirst();
-            // Get the next nodes to add to the queue
-            currentUnvisitedNeighbours = currentNode.getNeighbours().stream().filter(n -> {
-                //statement style to make more readable
-                return map.get(n).getNodeStatus() == UNMAPPED;
-            }).collect(Collectors.toSet());
-
-            for(Node node : currentUnvisitedNeighbours) {
-                int previousGold;
-                previousGold = map.get(currentNode).getGoldOnPath();
-                map.get(node).setPredecessor(currentNode);
-                map.get(node).setNodeStatus(PENDING);
-                map.get(node).setSearchDepth(map.get(currentNode).getSearchDepth() + 1);
-                map.get(node).setPathDistance(map.get(currentNode).getPathDistance()
-                        + currentNode.getEdge(node).length());
-                map.get(node).setGoldOnPath(previousGold + node.getTile().getGold());
-                searchQueue.add(node);
+            // Get unprocessed neighbouring nodes and add them to the queue
+            currentUnvisitedNeighbours = currentNode.getNeighbours().stream()
+                    .filter(n -> map.get(n).getNodeStatus() == UNMAPPED).collect(Collectors.toSet());
+            for(Node neighbour : currentUnvisitedNeighbours) {
+                updateEscapeNodeStatus(neighbour, currentNode);
+                searchQueue.add(neighbour);
             }
-
-            map.get(currentNode).setNodeStatus(MAPPED);
-            searchQueue.sort((n1,n2) -> strategy.compare(map.get(n1), map.get(n2)));
+            map.get(currentNode).setNodeStatus(MAPPED); // we're done with this node
+            searchQueue.sort((n1,n2) -> strategy.compare(map.get(n1), map.get(n2))); //prioritise for the next sweep
         }
     }
 
@@ -94,6 +79,27 @@ public class SearchMap {
     private void initialiseMap() {
         for(Node node: vertices) {
             map.put(node, new EscapeNodeStatus(node.getId()));
+        }
+    }
+
+    /*
+     * Helper function to update the EscapeNodeStatus of nodes before
+     * being added to the search queue.
+     */
+    private void updateEscapeNodeStatus(Node someNode, Node parentNode) {
+        map.get(someNode).setPredecessor(parentNode); //0: predecessor
+        map.get(someNode).setNodeStatus(PENDING); //1: status
+        if(someNode.equals(start)) {
+            map.get(someNode).setSearchDepth(0); //2: depth
+            map.get(someNode).setPathDistance(0); //3: distance
+            map.get(someNode).setGoldOnPath(0); //4: gold
+        }
+        else {
+            int previousGold = map.get(parentNode).getGoldOnPath();
+            map.get(someNode).setSearchDepth(map.get(parentNode).getSearchDepth() + 1); //2: depth
+            map.get(someNode).setPathDistance(map.get(parentNode).getPathDistance()
+                    + parentNode.getEdge(someNode).length());  //3: distance
+            map.get(someNode).setGoldOnPath(previousGold + someNode.getTile().getGold()); //4: gold
         }
     }
 

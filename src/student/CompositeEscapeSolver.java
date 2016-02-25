@@ -5,6 +5,7 @@ import game.Node;
 import java.util.*;
 
 /**
+ * //TODO documentation
  * Created by chris on 24/02/2016.
  */
 public class CompositeEscapeSolver implements EscapeSolver {

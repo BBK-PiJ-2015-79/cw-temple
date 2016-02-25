@@ -2,6 +2,7 @@ package student;
 
 /**
  * A balanced search strategy, halfway between avarice and panic
+ * //TODO desribe the strategy a bit more
  *
  * Created by chris on 23/02/2016.
  *
