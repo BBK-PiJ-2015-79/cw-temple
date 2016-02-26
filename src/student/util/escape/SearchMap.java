@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 /**
  * A SearchMap is a structure describing possible paths through a given EscapeState. The paths are
  * constructed using a breadth-first exploration strategy with the assumption that you want to get from
- * one node to another, a node weighting is specified at construction by passing in an object which implements
- * EscapeStrategy.
+ * one node to another specified node. A node weighting is specified at construction by passing in an object
+ * which implements EscapeStrategy.
  *
  * Once a SearchMap has been constructed paths can be found by specifying a destination Node (typically the exit
  * node but the class has deliberately been left open to calculate paths to other nodes) and then following the
@@ -46,17 +46,16 @@ public class SearchMap {
      * Builds the search map, the nodes are processed in breadth-first order and processed according
      * to the strategy defined by the SearchStrategy object passed in at construction.
      */
+    //TODO can this be split out in to two separate methods?
     private void buildSearchMap() {
         initialiseMap();
+        PriorityQueue<Node> searchQueue = new PriorityQueue<>((n1,n2) -> strategy.compare(map.get(n1), map.get(n2)));
 
-        LinkedList<Node> searchQueue = new LinkedList<>();
-        //currentUnvisitedNeighbours;
-
-        searchQueue.addLast(start);
+        searchQueue.add(start);
         updateEscapeNodeStatus(start, null);
         //Do BFS with prioritisation given by search strategy
         while(!searchQueue.isEmpty()) {
-            Node currentNode = searchQueue.removeFirst();
+            Node currentNode = searchQueue.remove();
             // Get unprocessed neighbouring nodes and add them to the queue
             Set<Node> currentUnvisitedNeighbours = currentNode.getNeighbours().stream()
                     .filter(n -> map.get(n).getNodeStatus() == MappingStatus.UNMAPPED).collect(Collectors.toSet());
@@ -65,7 +64,6 @@ public class SearchMap {
                 searchQueue.add(neighbour);
             }
             map.get(currentNode).setNodeStatus(MappingStatus.MAPPED); // we're done with this node
-            searchQueue.sort((n1,n2) -> strategy.compare(map.get(n1), map.get(n2))); //prioritise for the next sweep
         }
     }
 
@@ -113,10 +111,9 @@ public class SearchMap {
     public EscapePath getPathTo(Node finalNode) {
         EscapePath returnPath = new EscapePath();
         Node currentNode = finalNode;
-        Node nextNode = null;
         returnPath.addFirst(currentNode);
         while(map.get(currentNode).getSearchDepth() > 0) {
-            nextNode = map.get(currentNode).getPredecessor();
+            Node nextNode = map.get(currentNode).getPredecessor();
             returnPath.addFirst(nextNode);
             currentNode = nextNode;
         }
