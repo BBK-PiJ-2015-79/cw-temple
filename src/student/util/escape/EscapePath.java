@@ -2,10 +2,7 @@ package student.util.escape;
 
 import game.Node;
 
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * An escape path is a collection of nodes describing a path through an EscapeCavern. The nodes should
@@ -16,10 +13,10 @@ import java.util.stream.Collectors;
  * @author Chris Grocott
  */
 public class EscapePath {
-    LinkedList<Node> path;
+    private final List<Node> path;
 
     public EscapePath() {
-        path = new LinkedList<>();
+        path = new ArrayList<>();
     }
 
     /**
@@ -28,9 +25,8 @@ public class EscapePath {
      * @return the amount of gold on the path
      */
     public int getGoldOnPath() {
-        Set<Node> nodeSet = path.stream().collect(Collectors.toSet()); // eliminate duplicates
-        Optional<Integer> amount = nodeSet.stream().map(n -> n.getTile().getGold()).reduce((i1, i2) -> i1 + i2);
-        return (amount.isPresent()) ? amount.get() : 0;
+        Set<Node> nodeSet = new HashSet<>(path); //eliminate duplicates - no need to stream!
+        return nodeSet.stream().mapToInt(n -> n.getTile().getGold()).sum(); // make sure this is safe for empty?
     }
 
     /**
@@ -72,13 +68,16 @@ public class EscapePath {
      * @throws IllegalArgumentException
      */
     public EscapePath concatenatePath(EscapePath somePath) throws IllegalArgumentException {
-        //System.out.println("Join " + this.get(this.size() - 1) + " to " + somePath.get(0)); //debug
         if(!(this.get(this.size() - 1).equals(somePath.get(0)))) {
             throw new IllegalArgumentException("Paths were not contiguous");
         }
         EscapePath concatenatedPath = new EscapePath();
-        for(int i = 0; i < this.size(); i++) concatenatedPath.addLast(this.get(i));
-        for(int j = 1; j < somePath.size(); j++) concatenatedPath.addLast(somePath.get(j));
+        for(int i = 0; i < this.size(); i++) {
+            concatenatedPath.addLast(this.get(i));
+        }
+        for(int j = 1; j < somePath.size(); j++) {
+            concatenatedPath.addLast(somePath.get(j));
+        }
         return concatenatedPath;
     }
 
@@ -97,7 +96,7 @@ public class EscapePath {
      * @param someNode the node to add
      */
     public void addFirst(Node someNode) {
-        path.addFirst(someNode);
+        path.add(0, someNode);
     }
 
     /**
@@ -105,7 +104,7 @@ public class EscapePath {
      * @param someNode the node to add
      */
     public void addLast(Node someNode) {
-        path.addLast(someNode);
+        path.add((path.size()), someNode);
     }
 
     /**

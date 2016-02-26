@@ -50,7 +50,7 @@ public class SearchMap {
         initialiseMap();
 
         LinkedList<Node> searchQueue = new LinkedList<>();
-        Set<Node> currentUnvisitedNeighbours;
+        //currentUnvisitedNeighbours;
 
         searchQueue.addLast(start);
         updateEscapeNodeStatus(start, null);
@@ -58,7 +58,7 @@ public class SearchMap {
         while(!searchQueue.isEmpty()) {
             Node currentNode = searchQueue.removeFirst();
             // Get unprocessed neighbouring nodes and add them to the queue
-            currentUnvisitedNeighbours = currentNode.getNeighbours().stream()
+            Set<Node> currentUnvisitedNeighbours = currentNode.getNeighbours().stream()
                     .filter(n -> map.get(n).getNodeStatus() == MappingStatus.UNMAPPED).collect(Collectors.toSet());
             for(Node neighbour : currentUnvisitedNeighbours) {
                 updateEscapeNodeStatus(neighbour, currentNode);
@@ -83,20 +83,23 @@ public class SearchMap {
      * Helper function to update the EscapeNodeStatus of nodes before
      * being added to the search queue.
      */
-    private void updateEscapeNodeStatus(Node someNode, Node parentNode) {
-        map.get(someNode).setPredecessor(parentNode); //0: predecessor
-        map.get(someNode).setNodeStatus(MappingStatus.PENDING); //1: status
-        if(someNode.equals(start)) {
-            map.get(someNode).setSearchDepth(0); //2: depth
-            map.get(someNode).setPathDistance(0); //3: distance
-            map.get(someNode).setGoldOnPath(0); //4: gold
+    private void updateEscapeNodeStatus(Node currentNode, Node parentNode) {
+        EscapeNodeStatus currentNodeStatus = map.get(currentNode);
+        EscapeNodeStatus parentNodeStatus = map.get(parentNode);
+
+        currentNodeStatus.setPredecessor(parentNode); //0: predecessor
+        currentNodeStatus.setNodeStatus(MappingStatus.PENDING); //1: status
+        if(currentNode.equals(start)) {
+            currentNodeStatus.setSearchDepth(0); //2: depth
+            currentNodeStatus.setPathDistance(0); //3: distance
+            currentNodeStatus.setGoldOnPath(0); //4: gold
         }
         else {
-            int previousGold = map.get(parentNode).getGoldOnPath();
-            map.get(someNode).setSearchDepth(map.get(parentNode).getSearchDepth() + 1); //2: depth
-            map.get(someNode).setPathDistance(map.get(parentNode).getPathDistance()
-                    + parentNode.getEdge(someNode).length());  //3: distance
-            map.get(someNode).setGoldOnPath(previousGold + someNode.getTile().getGold()); //4: gold
+            int previousGold = parentNodeStatus.getGoldOnPath();
+            currentNodeStatus.setSearchDepth(parentNodeStatus.getSearchDepth() + 1); //2: depth
+            currentNodeStatus.setPathDistance(parentNodeStatus.getPathDistance()
+                    + parentNode.getEdge(currentNode).length());  //3: distance
+            currentNodeStatus.setGoldOnPath(previousGold + currentNode.getTile().getGold()); //4: gold
         }
     }
 
