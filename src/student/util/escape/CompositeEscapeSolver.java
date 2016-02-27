@@ -12,8 +12,8 @@ import java.util.*;
  * exit, but also from the exit to the currentState, taking advantage of the fact that paths are
  * reversible.
  *
- * The CompositeEscapeSolver then looks for the richest path in each SearchMap <i>regardless of where
- * this path ends up.</i> The CompositeEscapeSolver then looks for a path from the exit to the end
+ * The CompositeEscapeSolver then looks for the richest path in each SearchMap <em>regardless of where
+ * this path ends up.</em> The CompositeEscapeSolver then looks for a path from the exit to the end
  * point of the richest path, and glues these together to form a composite path from the start point
  * to the exit.
  *
@@ -21,6 +21,7 @@ import java.util.*;
  *
  * @author Chris Grocott
  */
+//TODO cleanup fields (what can be final, what can be removed), refactor repeating sections
 public class CompositeEscapeSolver implements EscapeSolver {
 
     private Node start;
