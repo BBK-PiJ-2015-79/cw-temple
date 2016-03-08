@@ -50,6 +50,7 @@ public class CompositeEscapeSolver implements EscapeSolver {
         this.solutionSet = new HashSet<>();
         generateSolutions();
         this.solutionSet.add((new FastEscapeSolver(start, end, vertices, timeLimit)).getPath()); // safety net
+        this.solutionSet.add((new GreedyEscapeSolver(start, end, vertices, timeLimit)).getPath());
     }
 
     private void setupSearchMaps() {
@@ -118,6 +119,6 @@ public class CompositeEscapeSolver implements EscapeSolver {
 
     @Override
     public EscapePath getPath() {
-        return solutionSet.stream().max((l1, l2) -> l1.getGoldOnPath() - l2.getGoldOnPath()).get();
+        return solutionSet.stream().filter(p -> p.getPathLength() <= timeLimit).max((l1, l2) -> l1.getGoldOnPath() - l2.getGoldOnPath()).get();
     }
 }

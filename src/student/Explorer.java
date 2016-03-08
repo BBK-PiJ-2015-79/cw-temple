@@ -7,14 +7,11 @@ import game.NodeStatus;
 import student.util.escape.CompositeEscapeSolver;
 import student.util.escape.EscapePath;
 import student.util.escape.EscapeSolver;
+import student.util.escape.OmniSolver;
 
 import java.util.*;
 
 public class Explorer {
-    // instance variables used in explore phase
-    private Random rand = new Random();
-    private Collection<Long> unvisitedNeighbours; //use to choose where to go
-
 
     /**
      * Explore the cavern, trying to find the
@@ -45,25 +42,23 @@ public class Explorer {
      * @param state the information available at the current state
      */
     public void explore(ExplorationState state) {
-        //TODO : Look for further optimisation, figure out why unvisitedNeighbours had to be a field
-        //TODO : for goodness sake, clean this code up!
-        Stack<Long> breadCrumbs = new Stack<>(); // to help with backtracking
+        //TODO : Look for further optimisation
+        //TODO : can this be split out?
+        Deque<Long> breadCrumbs = new LinkedList<>(); // to help with backtracking
         Collection<Long> visitedSquares = new HashSet<>(); // give priority to unvisited squares
-        //Collection<Long> unvisitedNeighbours; //use to choose where to go
-        long next; //the id of the next square to move to
-
-        Collection<NodeStatus> neighbours; // immediate neighbours
 
         while(state.getDistanceToTarget() > 0) {
             // let's hunt some orb
+            long next; //the id of the next square to move to
+            Collection<NodeStatus> neighbours; // immediate neighbours
             if(!visitedSquares.contains(state.getCurrentLocation())) {
                 visitedSquares.add(state.getCurrentLocation());
             }
-            unvisitedNeighbours = new HashSet<>();
+            Collection<Long> unvisitedNeighbours = new HashSet<>();
             neighbours = state.getNeighbours();
             neighbours.stream().filter(n -> (!visitedSquares.contains(n.getId())))
                     .forEach(n -> unvisitedNeighbours.add(n.getId()));
-            if(unvisitedNeighbours.size() == 0) {
+            if(unvisitedNeighbours.isEmpty()) {
                 next = breadCrumbs.pop();
             }
             else {
@@ -99,9 +94,11 @@ public class Explorer {
      * @param state the information available at the current state
      */
     public void escape(EscapeState state) {
-
+    //TODO clear up commented out sections.
         EscapeSolver solver = new CompositeEscapeSolver(state.getCurrentNode(),
                 state.getExit(), state.getVertices(), state.getTimeRemaining());
+//        EscapeSolver solver = new OmniSolver(state.getCurrentNode(),
+//                state.getExit(), state.getVertices(), state.getTimeRemaining());
         EscapePath path = solver.getPath();
         //follow the path, picking up gold as you go
         for(int i = 1; i < path.size(); i++) {
