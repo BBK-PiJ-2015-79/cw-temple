@@ -15,7 +15,6 @@ import java.util.Collection;
  *
  * @author Chris Grocott
  */
-// TODO: 25/02/2016 decide whether timeLimit checking is needed - what to do in case of issues?
 public class FastEscapeSolver implements EscapeSolver {
     private SearchMap map;
 

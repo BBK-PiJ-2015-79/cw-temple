@@ -7,7 +7,6 @@ import game.NodeStatus;
 import student.util.escape.CompositeEscapeSolver;
 import student.util.escape.EscapePath;
 import student.util.escape.EscapeSolver;
-import student.util.escape.OmniSolver;
 
 import java.util.*;
 
@@ -42,8 +41,6 @@ public class Explorer {
      * @param state the information available at the current state
      */
     public void explore(ExplorationState state) {
-        //TODO : Look for further optimisation
-        //TODO : can this be split out?
         Deque<Long> breadCrumbs = new LinkedList<>(); // to help with backtracking
         Collection<Long> visitedSquares = new HashSet<>(); // give priority to unvisited squares
 
@@ -94,11 +91,8 @@ public class Explorer {
      * @param state the information available at the current state
      */
     public void escape(EscapeState state) {
-    //TODO clear up commented out sections.
         EscapeSolver solver = new CompositeEscapeSolver(state.getCurrentNode(),
                 state.getExit(), state.getVertices(), state.getTimeRemaining());
-//        EscapeSolver solver = new OmniSolver(state.getCurrentNode(),
-//                state.getExit(), state.getVertices(), state.getTimeRemaining());
         EscapePath path = solver.getPath();
         //follow the path, picking up gold as you go
         for(int i = 1; i < path.size(); i++) {

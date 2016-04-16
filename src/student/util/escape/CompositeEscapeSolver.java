@@ -41,7 +41,7 @@ public class CompositeEscapeSolver implements EscapeSolver {
     private Set<EscapePath> solutionSet;
 
     public CompositeEscapeSolver(Node start, Node end, Collection<Node> vertices, int timeLimit) {
-        this.sortingStrategy = new GreedySearchStrategy(); // shame about the name mismatch
+        this.sortingStrategy = new GreedySearchStrategy();
         this.start = start;
         this.end = end;
         this.vertices = vertices;
@@ -119,6 +119,7 @@ public class CompositeEscapeSolver implements EscapeSolver {
 
     @Override
     public EscapePath getPath() {
-        return solutionSet.stream().filter(p -> p.getPathLength() <= timeLimit).max((l1, l2) -> l1.getGoldOnPath() - l2.getGoldOnPath()).get();
+        return solutionSet.stream().filter(p -> p.getPathLength() <= timeLimit)
+                .max((l1, l2) -> l1.getGoldOnPath() - l2.getGoldOnPath()).get();
     }
 }

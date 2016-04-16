@@ -46,7 +46,6 @@ public class SearchMap {
      * Builds the search map, the nodes are processed in breadth-first order and processed according
      * to the strategy defined by the SearchStrategy object passed in at construction.
      */
-    //TODO can this be split out in to two separate methods?
     private void buildSearchMap() {
         initialiseMap();
         PriorityQueue<Node> searchQueue = new PriorityQueue<>((n1,n2) -> strategy.compare(map.get(n1), map.get(n2)));
